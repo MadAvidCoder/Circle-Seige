@@ -1,13 +1,13 @@
 extends CharacterBody2D
 
-@export var max_accel: float = 8000.0
-@export var max_speed: float = 1500.0
+@export var max_accel: float = 10000.0
+@export var max_speed: float = 1700.0
 @export var slow_radius: float = 180.0
 @export var stop_radius: float = 10.0
 
 @export var vel_gain: float = 14.0
 @export var spring_gain: float = 22.0
-@export var damping: float = 10.0
+@export var damping: float = 3.0
 
 @onready var arena_radius = $"../Arena".radius
 @onready var player_size = $Sprite2D.get_rect().size.x

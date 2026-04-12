@@ -2,6 +2,7 @@ use clap::{Args, Parser, Subcommand};
 use serde::{Serialize};
 use std::fs::File;
 use std::io::{BufWriter, Write};
+use hound;
 
 #[derive(Parser)]
 #[command(name = "CircleSiegeBackend")]
@@ -47,15 +48,22 @@ fn main() -> anyhow::Result<()> {
     let args = CLI::parse();
     match args.command {
         Commands::AnalyzeWav(params) => {
+            let mut reader = hound::WavReader::open(&params.input).unwrap();
+            let samples: Vec<i16> = reader
+                .samples()
+                .map(|s| s.unwrap())
+                .collect();
+            let spec = reader.spec();
+
             let file = File::create(&params.output)?;
             let mut w = BufWriter::new(file);
 
             let meta = Record::Meta(MetaRecord {
-                sr: 0,
-                channels: 0,
+                sr: spec.sample_rate,
+                channels: spec.channels,
                 win: 2048,
                 hop: 512,
-                duration: 0.0,
+                duration: (reader.len() / spec.channels as u32) as f32 / spec.sample_rate as f32,
             });
 
             serde_json::to_writer(&mut w, &meta)?;

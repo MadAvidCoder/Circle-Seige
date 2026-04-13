@@ -255,8 +255,10 @@ fn main() -> anyhow::Result<()> {
             serde_json::to_writer(&mut w, &meta)?;
             w.write_all(b"\n")?;
 
-            serde_json::to_writer(&mut w, &records)?;
-            w.write_all(b"\n")?;
+            for record in &records {
+                serde_json::to_writer(&mut w, record)?;
+                w.write_all(b"\n")?;
+            }
 
             serde_json::to_writer(&mut w, &Record::Done)?;
             w.write_all(b"\n")?;

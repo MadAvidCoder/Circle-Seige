@@ -8,6 +8,7 @@ use hound;
 use itertools::Itertools;
 use rustfft::{Fft, FftPlanner};
 use rustfft::num_complex::Complex;
+use std::convert::TryFrom;
 
 const WINDOW: usize = 2048;
 const HOP: usize = 512;
@@ -43,8 +44,37 @@ enum Record {
     Energy(EnergyRecord),
     #[serde(rename = "band")]
     Band(BandEnergies),
+    #[serde(rename = "event")]
+    Event(EventRecord),
     #[serde(rename= "done")]
     Done,
+}
+
+#[derive(Serialize)]
+enum Bands {
+    Low,
+    Mid,
+    High,
+}
+
+impl TryFrom<usize> for Bands {
+    type Error = &'static str;
+
+    fn try_from(value: usize) -> Result<Self, Self::Error> {
+        match value {
+            0 => Ok(Bands::Low),
+            1 => Ok(Bands::Mid),
+            2 => Ok(Bands::High),
+            _ => Err("Value out of Bounds"),
+        }
+    }
+}
+
+#[derive(Serialize)]
+struct EventRecord {
+    t: f64,
+    band: Bands,
+    s: f32,
 }
 
 #[derive(Serialize)]
@@ -68,6 +98,26 @@ struct MetaRecord {
 struct EnergyRecord {
     t: f64,
     e: f32
+}
+
+struct BandDetect {
+    prev_smooth: f32,
+    smooth: f32,
+    mean: f32,
+    dev: f32,
+    refractory: usize,
+}
+
+const BAND_EMA: f32 = 0.25;
+const ONSET_MEAN_EMA: f32 = 0.08;
+const ONSET_DEV_EMA: f32 = 0.08;
+const THRESH_K: f32 = 7.0;
+const REFRACTORY_FRAMES: [usize; 3] = [12, 8, 6];
+
+impl BandDetect {
+    fn new() -> Self {
+        BandDetect { prev_smooth: 0.0, smooth: 0.0, mean: 0.0, dev: 0.0, refractory: 0 }
+    }
 }
 
 fn main() -> anyhow::Result<()> {
@@ -118,6 +168,8 @@ fn main() -> anyhow::Result<()> {
 
             let mut fft_in: Vec<Complex<f32>> = vec![Complex::new(0.0, 0.0); WINDOW];
 
+            let mut band_detectors = [BandDetect::new(), BandDetect::new(), BandDetect::new()];
+
             let mut i = 0;
             while (HOP * i) + WINDOW < samples.len() {
                 let start = i * HOP;
@@ -158,6 +210,33 @@ fn main() -> anyhow::Result<()> {
                         }
                     )
                 );
+
+                for b in 0..3 {
+                    let energy = energies[b];
+                    let detector = &mut band_detectors[b];
+
+                    detector.smooth = detector.smooth * (1.0 - BAND_EMA) + energy * BAND_EMA;
+
+                    let onset = (detector.smooth - detector.prev_smooth).max(0.0);
+                    detector.prev_smooth = detector.smooth;
+
+                    detector.mean = detector.mean * (1.0 - ONSET_MEAN_EMA) + onset * ONSET_MEAN_EMA;
+                    let abs_deviation = (onset - detector.mean).abs();
+                    detector.dev = detector.dev * (1.0 - ONSET_DEV_EMA) + abs_deviation * ONSET_DEV_EMA;
+
+                    detector.refractory = detector.refractory.saturating_sub(1);
+                    if onset > detector.mean + THRESH_K * detector.dev && detector.refractory == 0 {
+                        let strength = ((onset - (detector.mean + THRESH_K * detector.dev)) / (detector.mean + THRESH_K * detector.dev + 1e-8)).clamp(0.0, 1.0);
+
+                        records.push(Record::Event(EventRecord {
+                            t,
+                            band: Bands::try_from(b).unwrap(),
+                            s: strength,
+                        }));
+
+                        detector.refractory = REFRACTORY_FRAMES[b];
+                    }
+                }
 
                 i += 1;
             }

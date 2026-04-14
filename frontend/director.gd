@@ -47,10 +47,10 @@ func _process(_delta: float) -> void:
 		var target = (player.global_position - arena.global_position).angle()
 		gap_centre = lerp_angle(gap_centre, target, 0.18)
 	
-	while next_beat_index < main.beats.size() and main.beats[next_beat_index] <= lookahead_time+0.2:
+	while next_beat_index < main.beats.size() and main.beats[next_beat_index] <= lookahead_time+0.5:
 		next_beat_index += 1
 		if next_beat_index % 4 == 0:
-			spawn_radial(randf() * TAU, Color(0.996, 0.715, 0.0, 1.0))
+			spawn_radial(randf() * TAU, Color(0.996, 0.715, 0.0, 1.0), radial_speed*0.7)
 	
 	while next_event_index < main.events.size():
 		var event = main.events[next_event_index]
@@ -129,7 +129,7 @@ func _draw() -> void:
 	
 	draw_arc(Vector2.ZERO, r, start, end, 64, Color(0.2, 1.0, 0.2, 0.9), 2.0, true)
 
-func spawn_radial(theta: float, colour: Color = Color("d9a0d4")) -> void:
+func spawn_radial(theta: float, colour: Color = Color("d9a0d4"), spd = radial_speed) -> void:
 	if is_angle_in_gap(theta):
 		theta = nearest_angle_outside_gap(theta)
 	
@@ -140,7 +140,7 @@ func spawn_radial(theta: float, colour: Color = Color("d9a0d4")) -> void:
 	
 	var tg = radial_telegraph_scene.instantiate()
 	telegraphs.add_child(tg)
-	tg.setup(centre, spawn_pos, inward, projectile_scene, radial_speed, projectiles, telegraph_time, colour)
+	tg.setup(centre, spawn_pos, inward, projectile_scene, spd, projectiles, telegraph_time, colour)
 
 func spawn_chord(theta_a: float, theta_b: float) -> void:
 	if is_angle_in_gap(theta_a):

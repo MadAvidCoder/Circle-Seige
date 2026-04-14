@@ -10,6 +10,7 @@ extends Node2D
 @export var radial_speed: float = 520.0
 @export var chord_speed: float = 760.0
 @export var telegraph_time: float = 0.30
+@export var travel_time: float = 0.175
 
 var projectile_scene = preload("res://Projectile.tscn")
 var radial_telegraph_scene = preload("res://RadialTelegraph.tscn")
@@ -35,7 +36,7 @@ func _process(_delta: float) -> void:
 		return
 	
 	var song_time = stream.get_playback_position()
-	var lookahead_time = song_time + telegraph_time
+	var lookahead_time = song_time + telegraph_time + travel_time
 	
 	if song_time > gap_until_t:
 		var target = (player.global_position - arena.global_position).angle()

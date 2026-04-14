@@ -9,8 +9,7 @@ extends Node2D
 
 @export var radial_speed: float = 520.0
 @export var chord_speed: float = 760.0
-@export var telegraph_radial: float = 0.40
-@export var telegraph_chord: float = 0.55
+@export var telegraph_time: float = 0.30
 
 var projectile_scene = preload("res://Projectile.tscn")
 var radial_telegraph_scene = preload("res://RadialTelegraph.tscn")
@@ -20,34 +19,50 @@ var chord_telegraph_scene = preload("res://ChordTelegraph.tscn")
 @onready var player = $"../Player"
 @onready var telegraphs = $"../Telegraphs"
 @onready var projectiles = $"../Projectiles"
+@onready var stream = $"../AudioStreamPlayer"
+@onready var main = $".."
 
-var song_time = 0.0
 var gap_centre = 0.0
 var gap_until_t = 0.0
+
+var next_event_index = 0
 
 func _ready() -> void:
 	gap_centre = (player.global_position - arena.global_position).angle()
 
-func _process(delta: float) -> void:
-	song_time += delta
+func _process(_delta: float) -> void:
+	if !stream.playing:
+		return
+	
+	var song_time = stream.get_playback_position()
+	var lookahead_time = song_time + telegraph_time
 	
 	if song_time > gap_until_t:
 		var target = (player.global_position - arena.global_position).angle()
 		gap_centre = lerp_angle(gap_centre, target, 0.18)
-		
+	
+	while next_event_index < main.events.size():
+		var event = main.events[next_event_index]
+		if event["t"] <= lookahead_time:
+			var base_theta = fmod(event["t"] * 1.321, TAU)
+			
+			match event["band"].to_lower():
+				"low":
+					var theta_a = base_theta
+					var theta_b = base_theta + PI * 0.22 + event["s"] * 1.1
+					spawn_chord(theta_a, theta_b)
+				"mid", "high":
+					spawn_radial(base_theta)
+			next_event_index += 1
+		else:
+			break
+	
 	if debug_draw_gap:
 		queue_redraw()
-	
-	if Input.is_action_just_pressed("ui_left"):
-		lock_gap(1.0)
-		spawn_radial(randf() * TAU)
-
-	if Input.is_action_just_pressed("ui_right"):
-		lock_gap(1.0)
-		spawn_chord(randf() * TAU, randf() * TAU)
 
 
 func lock_gap(time: float) -> void:
+	var song_time = stream.get_playback_position()
 	gap_until_t = maxf(gap_until_t, song_time+maxf(time, min_gap_window))
 
 func get_gap_width_rad() -> float:
@@ -57,6 +72,7 @@ func get_gap_effective_width_rad() -> float:
 	return deg_to_rad(gap_width_deg + 2.0 * gap_margin_deg)
 
 func is_angle_in_gap(theta: float, t: float = -1.0) -> bool:
+	var song_time = stream.get_playback_position()
 	if t < 0.0:
 		t = song_time
 	
@@ -76,9 +92,9 @@ func nearest_angle_outside_gap(theta: float) -> float:
 	if absf(d) > half:
 		return theta
 	
-	var sign = 1.0 if d >= 0.0 else -1.0
+	var neg = 1.0 if d >= 0.0 else -1.0
 	var eps = deg_to_rad(0.5)
-	return gap_centre + sign * (half + eps)
+	return gap_centre + neg * (half + eps)
 
 func _draw() -> void:
 	if !debug_draw_gap:
@@ -113,7 +129,7 @@ func spawn_radial(theta: float) -> void:
 	
 	var tg = radial_telegraph_scene.instantiate()
 	telegraphs.add_child(tg)
-	tg.setup(centre, spawn_pos, inward, projectile_scene, radial_speed, projectiles, telegraph_radial)
+	tg.setup(centre, spawn_pos, inward, projectile_scene, radial_speed, projectiles, telegraph_time)
 
 func spawn_chord(theta_a: float, theta_b: float) -> void:
 	if is_angle_in_gap(theta_a):
@@ -128,4 +144,4 @@ func spawn_chord(theta_a: float, theta_b: float) -> void:
 	
 	var tg = chord_telegraph_scene.instantiate()
 	telegraphs.add_child(tg)
-	tg.setup(a, b, projectile_scene, chord_speed, projectiles, telegraph_chord)
+	tg.setup(a, b, projectile_scene, chord_speed, projectiles, telegraph_time)

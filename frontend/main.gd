@@ -1,5 +1,9 @@
 extends Node2D
 
+var meta
+var energies = []
+var events = []
+
 @onready var file_sel = $FileDialog
 @onready var popup = $PopupPanel
 @onready var popup_label = $PopupPanel/Label
@@ -20,9 +24,7 @@ func _file_selected(path: String) -> void:
 		"--input", wav_path,
 		"--output", analysis_path
 	])
-	
-	popup.hide()
-	
+		
 	var records = []
 	var file = FileAccess.open(analysis_path, FileAccess.READ)
 	while not file.eof_reached():
@@ -34,17 +36,18 @@ func _file_selected(path: String) -> void:
 			records.append(parsed)
 	file.close()
 	
-	var meta
-	var energies = []
-	var events = []
 	for r in records:
 		match r["type"]:
 			"meta": meta = r
 			"energy": energies.append(r)
 			"event": events.append(r)
-		
+
+	events.sort_custom(func(a, b): return a["t"] < b["t"])
+	energies.sort_custom(func(a, b): return a["t"] < b["t"])
+
 	var audio = AudioStreamWAV.new()
 	var wav_file = FileAccess.open(wav_path, FileAccess.READ)
 	$AudioStreamPlayer.stream = AudioStreamWAV.load_from_buffer(wav_file.get_buffer(wav_file.get_length()))
 	wav_file.close()
 	$AudioStreamPlayer.play()
+	popup.hide()

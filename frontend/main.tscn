@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://ct3pruaskr5c8" path="res://player.gd" id="1_0xm2m"]
 [ext_resource type="Script" uid="uid://7p7q3bn7v4xc" path="res://main.gd" id="1_1bvp3"]
 [ext_resource type="Script" uid="uid://xgqcskvhu27c" path="res://arena.gd" id="1_ig7tw"]
+[ext_resource type="Script" uid="uid://bsvr1pwowkyt3" path="res://spectrum.gd" id="2_lquwl"]
 [ext_resource type="Script" uid="uid://d3fp47cajp10d" path="res://director.gd" id="3_h2yge"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_h2yge"]
@@ -19,6 +20,10 @@ height = 50
 
 [node name="Node2D" type="Node2D" unique_id=1525720828]
 script = ExtResource("1_1bvp3")
+
+[node name="Spectrum" type="Node2D" parent="." unique_id=72163630]
+position = Vector2(-960, 450)
+script = ExtResource("2_lquwl")
 
 [node name="Arena" type="Node2D" parent="." unique_id=1662148492]
 script = ExtResource("1_ig7tw")

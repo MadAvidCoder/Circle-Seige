@@ -3,6 +3,7 @@ extends Node2D
 var meta
 var energies = []
 var events = []
+var spectrum = []
 
 var energy = 0.0
 
@@ -43,9 +44,11 @@ func _file_selected(path: String) -> void:
 			"meta": meta = r
 			"energy": energies.append(r)
 			"event": events.append(r)
+			"spectrum": spectrum.append(r)
 
 	events.sort_custom(func(a, b): return a["t"] < b["t"])
 	energies.sort_custom(func(a, b): return a["t"] < b["t"])
+	spectrum.sort_custom(func(a, b): return a["t"] < b["t"])
 
 	var audio = AudioStreamWAV.new()
 	var wav_file = FileAccess.open(wav_path, FileAccess.READ)
@@ -67,3 +70,15 @@ func get_energy(t: float) -> float:
 			var f = (t-t0)/(t1-t0)
 			return lerp(e0, e1, f)
 	return energies[energies.size()-1]["e"] if energies.size() > 0 else 0.0
+
+func get_spectrum(time: float) -> Array:
+	for i in range(spectrum.size()-1):
+		if time >= spectrum[i]["t"] and time < spectrum[i+1]["t"]:
+			var a = spectrum[i]["bins"]
+			var b = spectrum[i+1]["bins"]
+			var f = (time-spectrum[i]["t"])/(spectrum[i+1]["t"]-spectrum[i]["t"])
+			var out = []
+			for j in range(a.size()):
+				out.append(lerp(a[j], b[j], f))
+			return out
+	return spectrum[spectrum.size()-1]["bins"] if spectrum.size() > 0 else []

@@ -44,12 +44,19 @@ enum Record {
     Energy(EnergyRecord),
     #[serde(rename = "band")]
     Band(BandEnergies),
+    #[serde(rename = "spectrum")]
+    Spectrum(SpectrumRecord),
     #[serde(rename = "event")]
     Event(EventRecord),
     #[serde(rename= "done")]
     Done,
 }
 
+#[derive(Serialize)]
+struct SpectrumRecord {
+    t: f64,
+    bins: Vec<f32>,
+}
 #[derive(Serialize)]
 enum Bands {
     Low,
@@ -197,6 +204,11 @@ fn main() -> anyhow::Result<()> {
                 fft.process(&mut fft_in);
 
                 let power_spectrum: Vec<f32> = fft_in[0..=WINDOW/2].iter().map(|c| c.norm_sqr()).collect();
+
+                records.push(
+                    Record::Spectrum(
+                        SpectrumRecord { t, bins: power_spectrum.clone() })
+                );
 
                 let energies: [f32; 3] = bins.map(|(lo, hi)| power_spectrum[lo..=hi].iter().sum::<f32>());
 

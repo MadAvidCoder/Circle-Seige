@@ -4,6 +4,8 @@ var meta
 var energies = []
 var events = []
 
+var energy = 0.0
+
 @onready var file_sel = $FileDialog
 @onready var popup = $PopupPanel
 @onready var popup_label = $PopupPanel/Label
@@ -51,3 +53,17 @@ func _file_selected(path: String) -> void:
 	wav_file.close()
 	$AudioStreamPlayer.play()
 	popup.hide()
+
+func _process(_delta: float) -> void:
+	energy = get_energy($AudioStreamPlayer.get_playback_position())
+
+func get_energy(t: float) -> float:
+	for i in range(energies.size()-1):
+		var t0 = energies[i]["t"]
+		var t1 = energies[i+1]["t"]
+		if t >= t0 and t <= t1:
+			var e0 = energies[i]["e"]
+			var e1 = energies[i+1]["e"]
+			var f = (t-t0)/(t1-t0)
+			return lerp(e0, e1, f)
+	return energies[energies.size()-1]["e"] if energies.size() > 0 else 0.0

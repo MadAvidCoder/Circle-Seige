@@ -18,6 +18,8 @@ var chord_b: Vector2
 var chord_t = 0.0
 var chord_len = 1.0
 
+@onready var main = get_tree().current_scene
+
 func setup_radial(start_pos: Vector2, direction: Vector2, spd: float) -> void:
 	global_position = start_pos
 	move_kind = MoveKind.RADIAL
@@ -34,11 +36,12 @@ func setup_chord(a: Vector2, b: Vector2, spd: float) -> void:
 	chord_len = maxf(a.distance_to(b), 0.001)
 
 func _physics_process(delta: float) -> void:
+	var cur_speed = speed * (0.9 + 0.4 * main.energy)
 	match move_kind:
 		MoveKind.RADIAL:
-			global_position += dir  * speed * delta
+			global_position += dir  * cur_speed * delta
 		MoveKind.CHORD:
-			var ds = speed * delta
+			var ds = cur_speed * delta
 			chord_t += ds / chord_len
 			if chord_t >= 1.0:
 				queue_free()

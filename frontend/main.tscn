@@ -22,7 +22,6 @@ script = ExtResource("1_1bvp3")
 
 [node name="Arena" type="Node2D" parent="." unique_id=1662148492]
 script = ExtResource("1_ig7tw")
-radius = 420.0
 thickness = 10.0
 
 [node name="Director" type="Node2D" parent="." unique_id=1025563058]

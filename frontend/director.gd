@@ -1,6 +1,8 @@
 extends Node2D
 
-@export var gap_width_deg: float = 40.0  
+@export var gap_width_deg: float = 40.0 
+var min_gap = 28
+var max_gap = 60 
 @export var gap_margin_deg: float = 10.0
 @export var min_gap_window: float = 0.75
 
@@ -32,6 +34,8 @@ func _ready() -> void:
 	gap_centre = (player.global_position - arena.global_position).angle()
 
 func _process(_delta: float) -> void:
+	gap_width_deg = lerp(max_gap, min_gap, pow(main.energy, 1.12))
+	
 	if !stream.playing:
 		return
 	

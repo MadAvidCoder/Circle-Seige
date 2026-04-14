@@ -20,13 +20,14 @@ var chord_len = 1.0
 
 @onready var main = get_tree().current_scene
 
-func setup_radial(start_pos: Vector2, direction: Vector2, spd: float) -> void:
+func setup_radial(start_pos: Vector2, direction: Vector2, spd: float, colour: Color = Color("d9a0d4")) -> void:
 	global_position = start_pos
 	move_kind = MoveKind.RADIAL
 	dir = direction.normalized()
 	speed = spd
+	modulate = colour
 
-func setup_chord(a: Vector2, b: Vector2, spd: float) -> void:
+func setup_chord(a: Vector2, b: Vector2, spd: float, colour: Color = Color("d9a0d4")) -> void:
 	chord_a = a
 	chord_b = b
 	global_position = a
@@ -34,6 +35,7 @@ func setup_chord(a: Vector2, b: Vector2, spd: float) -> void:
 	speed = spd
 	chord_t = 0.0
 	chord_len = maxf(a.distance_to(b), 0.001)
+	modulate = colour
 
 func _physics_process(delta: float) -> void:
 	var cur_speed = speed * (0.9 + 0.4 * main.energy)

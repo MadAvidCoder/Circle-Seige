@@ -35,6 +35,15 @@ one_shot = true
 
 [node name="Director" type="Node2D" parent="." unique_id=1025563058]
 script = ExtResource("3_h2yge")
+gap_width_deg = null
+gap_margin_deg = null
+min_gap_window = null
+debug_draw_gap = null
+debug_gap_alpha = null
+radial_speed = null
+chord_speed = null
+telegraph_time = null
+travel_time = null
 
 [node name="Player" type="CharacterBody2D" parent="." unique_id=589192664]
 script = ExtResource("1_0xm2m")

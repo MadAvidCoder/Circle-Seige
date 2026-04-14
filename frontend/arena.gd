@@ -21,7 +21,7 @@ func _process(delta: float) -> void:
 	
 	if next_beat_index < main.beats.size() and stream.get_playback_position() >= main.beats[next_beat_index]:
 		next_beat_index += 1
-		modulate = Color(1,0.9,0.7)
+		modulate = Color(1.0, 0.9, 0.7)
 		timer.start()
 
 func _on_timer_timeout() -> void:

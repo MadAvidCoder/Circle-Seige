@@ -10,8 +10,9 @@ var dir: Vector2
 var projectile_scene: PackedScene
 var projectile_speed: float
 var projectiles_parent: Node
+var col_pro
 
-func setup(_arena_centre: Vector2, _spawn_pos: Vector2, _dir: Vector2, _projectile_scene: PackedScene, _projectile_speed: float, _projectiles_parent: Node, _telegraph: float) -> void:
+func setup(_arena_centre: Vector2, _spawn_pos: Vector2, _dir: Vector2, _projectile_scene: PackedScene, _projectile_speed: float, _projectiles_parent: Node, _telegraph: float, cr: Color = Color("d9a0d4")) -> void:
 	arena_centre = _arena_centre
 	spawn_pos = _spawn_pos
 	dir = _dir.normalized()
@@ -21,6 +22,7 @@ func setup(_arena_centre: Vector2, _spawn_pos: Vector2, _dir: Vector2, _projecti
 	telegraph_time = _telegraph
 	t_left = telegraph_time
 	global_position = Vector2.ZERO
+	col_pro = cr
 
 func _process(delta: float) -> void:
 	t_left -= delta
@@ -28,7 +30,7 @@ func _process(delta: float) -> void:
 	if t_left <= 0.0:
 		var p = projectile_scene.instantiate()
 		projectiles_parent.add_child(p)
-		p.setup_radial(spawn_pos, dir, projectile_speed)
+		p.setup_radial(spawn_pos, dir, projectile_speed, col_pro)
 		queue_free()
 
 func _draw() -> void:

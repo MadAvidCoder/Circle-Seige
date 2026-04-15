@@ -26,6 +26,7 @@ var chord_telegraph_scene = preload("res://ChordTelegraph.tscn")
 @onready var main = $".."
 @onready var camera = $"../Camera2D"
 @onready var shock = $"../Shockwave/Line2D"
+@onready var particles = $"../BeatParticles"
 
 var gap_centre = 0.0
 var gap_until_t = 0.0
@@ -53,10 +54,14 @@ func _process(_delta: float) -> void:
 		next_beat_index += 1
 		arena.pulse()
 		if next_beat_index % 4 == 0:
-			camera.trigger_beat(telegraph_time+0.5)
+			camera.trigger_beat()
 			shock.fire(arena.radius, arena.radius + 300, Color(0.865, 0.58, 0.0, 1.0))
+			particles.global_position = arena.global_position
+			particles.process_material.emission_ring_inner_radius = arena.radius + 30
+			particles.process_material.emission_ring_radius = arena.radius + 31
+			particles.restart()
 		elif next_beat_index % 4 == 2:
-			spawn_radial(randf() * TAU, Color(0.996, 0.715, 0.0, 1.0), radial_speed*0.7)
+			spawn_radial(randf() * TAU, Color(0.996, 0.204, 0.031, 1.0), radial_speed*0.7)
 	
 	while next_event_index < main.events.size():
 		var event = main.events[next_event_index]

@@ -10,17 +10,22 @@ var radius = nominal_radius
 @onready var stream = $"../AudioStreamPlayer"
 @onready var timer = $Timer
 
+var bump = 1.0
+
 func _draw() -> void:
 	draw_arc(Vector2.ZERO, radius, 0.0, TAU, 128, Color(0.9, 0.9, 1.0, 0.9), thickness, true)
 
 func _process(delta: float) -> void:
 	queue_redraw()
 	var target_radius = nominal_radius * (1 + 0.3 * main.energy)
-	radius = lerp(radius, target_radius, smooth_factor)
+	radius = lerp(radius, target_radius, smooth_factor) * bump
 
 func pulse():
 	modulate = Color(1.0, 0.9, 0.7)
 	timer.start()
+	var tween = get_tree().create_tween()
+	tween.tween_property(self, "bump", 1.02, 0.07).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(self, "bump", 1, 0.17).set_trans(Tween.TRANS_SINE)
 
 func _on_timer_timeout() -> void:
 	modulate = Color(1, 1, 1)

@@ -1,5 +1,10 @@
 shader_type canvas_item;
 
+uniform vec2 drift_dir = vec2(0.07, 0.03);
+uniform float drift_strength = 0.20;
+uniform float warp2 = 0.06;
+uniform float warp2_scale = 1.8;
+
 // Moving points (0..1 UV)
 uniform vec2 p0 = vec2(0.25, 0.30);
 uniform vec2 p1 = vec2(0.75, 0.28);
@@ -7,10 +12,10 @@ uniform vec2 p2 = vec2(0.35, 0.78);
 uniform vec2 p3 = vec2(0.78, 0.75);
 
 // Duotone palette (mature defaults: ink + paper)
-uniform vec3 dark_col  : source_color = vec3(0.04, 0.03, 0.06); // near-black blue
-uniform vec3 light_col : source_color = vec3(0.83, 0.78, 1); // cool light
+uniform vec3 dark_col: source_color = vec3(0.04, 0.03, 0.06); // near-black blue
+uniform vec3 light_col: source_color = vec3(0.83, 0.78, 1); // cool light
 
-uniform float mix_strength = 0.35; // 0..1, how visible the gradient is
+uniform float mix_strength = 0.47; // 0..1, how visible the gradient is
 uniform float mid = 0.50;          // center point for remap
 uniform float range = 0.55;        // widen/narrow variation
 
@@ -23,7 +28,7 @@ uniform float beat = 0.0;         // 0..1 short pulse
 
 uniform float contrast = 1.0;    // 0.9..1.3
 uniform float grain = 0.010;      // 0.0..0.02
-uniform float vignette = 0.22;    // 0..0.4
+uniform float vignette = 0.44;    // 0..0.4
 uniform float brightness = 1.0;   // global brightness
 
 float hash(vec2 p) {
@@ -53,9 +58,13 @@ void fragment() {
 
     float t = TIME * time_scale * (1.0 + energy * 0.6);
 
-    // Warp amount responds to energy + beat (subtle!)
-    float warp_amt = flow * (0.7 + energy * 0.9 + beat * 0.8);
-    uv = warp(uv, t, warp_amt);
+	uv += drift_dir * t * drift_strength;
+
+	float warp_amt = flow * (0.7 + energy * 0.9 + beat * 0.8);
+	uv = warp(uv, t, warp_amt);
+
+	// Second, even gentler warp layer (adds life without “wiggle”)
+	uv = warp(uv, t * warp2_scale + 13.7, warp2 * (0.7 + energy * 0.6));
 
     // k controls blob size; lower k = larger/smoother
     float k = mix(6.0, 2.2, clamp(softness, 0.0, 2.0)); // softness up => k down

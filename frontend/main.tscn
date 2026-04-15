@@ -14,23 +14,27 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_efxa6"]
 shader = ExtResource("3_4c57u")
+shader_parameter/drift_dir = Vector2(0.07, 0.03)
+shader_parameter/drift_strength = 0.2
+shader_parameter/warp2 = 0.06
+shader_parameter/warp2_scale = 1.8
 shader_parameter/p0 = Vector2(0.25, 0.3)
 shader_parameter/p1 = Vector2(0.75, 0.28)
 shader_parameter/p2 = Vector2(0.35, 0.78)
 shader_parameter/p3 = Vector2(0.78, 0.75)
-shader_parameter/dark_col = Color(0.05, 0.06, 0.08, 1)
-shader_parameter/light_col = Color(0.78, 0.82, 0.9, 1)
+shader_parameter/dark_col = Color(0.04, 0.03, 0.06, 1)
+shader_parameter/light_col = Color(0.83, 0.78, 1, 1)
 shader_parameter/mix_strength = 0.35
 shader_parameter/mid = 0.5
 shader_parameter/range = 0.55
-shader_parameter/softness = 1.35
-shader_parameter/flow = 0.2
-shader_parameter/time_scale = 0.08
+shader_parameter/softness = 1.5
+shader_parameter/flow = 0.07
+shader_parameter/time_scale = 0.035
 shader_parameter/energy = 0.0
 shader_parameter/beat = 0.0
-shader_parameter/contrast = 1.1
-shader_parameter/grain = 0.015
-shader_parameter/vignette = 0.18
+shader_parameter/contrast = 1.0
+shader_parameter/grain = 0.01
+shader_parameter/vignette = 0.44
 shader_parameter/brightness = 1.0
 
 [sub_resource type="Gradient" id="Gradient_5vw27"]

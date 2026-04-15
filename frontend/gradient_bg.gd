@@ -1,7 +1,7 @@
 extends ColorRect
 
-@export var radius := 0.14           # lower = gentler
-@export var speed := 0.045           # slower = smoother
+@export var radius := 0.16           # lower = gentler
+@export var speed := 0.06            # slower = smoother
 @export var energy_follow := 3.5     # higher = more reactive, lower = smoother
 @export var beat_decay := 6.0        # how fast beat pulse fades
 @export var downbeat_every := 4      # treat every 4 beats as "strong"
@@ -20,6 +20,9 @@ func _process(delta: float) -> void:
 	var mat := material as ShaderMaterial
 	if mat == null:
 		return
+		
+	mat.set_shader_parameter("drift_strength", 0.18 + _energy_s * 0.12)
+	mat.set_shader_parameter("flow", 0.07 + _energy_s * 0.05)
 
 	mat.set_shader_parameter("energy", _energy_s)
 	mat.set_shader_parameter("beat", _beat)
@@ -27,7 +30,6 @@ func _process(delta: float) -> void:
 	var t := Time.get_ticks_msec() * 0.001
 	var s := speed * (1.0 + _energy_s * 0.65)
 
-	# VERY slow LFO motion; no randomness => no "jumps"
 	mat.set_shader_parameter("p0", Vector2(0.34, 0.38) + Vector2(cos(t*s*0.9),  sin(t*s*0.7))  * radius)
 	mat.set_shader_parameter("p1", Vector2(0.70, 0.35) + Vector2(cos(t*s*0.8 + 1.7), sin(t*s*0.6 + 0.9)) * radius)
 	mat.set_shader_parameter("p2", Vector2(0.38, 0.72) + Vector2(cos(t*s*0.7 + 3.2), sin(t*s*0.9 + 2.1)) * radius)

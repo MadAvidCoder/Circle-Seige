@@ -25,6 +25,7 @@ var chord_telegraph_scene = preload("res://ChordTelegraph.tscn")
 @onready var stream = $"../AudioStreamPlayer"
 @onready var main = $".."
 @onready var camera = $"../Camera2D"
+@onready var shock = $"../Shockwave/Line2D"
 
 var gap_centre = 0.0
 var gap_until_t = 0.0
@@ -48,10 +49,13 @@ func _process(_delta: float) -> void:
 		var target = (player.global_position - arena.global_position).angle()
 		gap_centre = lerp_angle(gap_centre, target, 0.18)
 	
-	while next_beat_index < main.beats.size() and main.beats[next_beat_index] <= lookahead_time+0.5:
+	while next_beat_index < main.beats.size() and main.beats[next_beat_index] <= song_time:
 		next_beat_index += 1
+		arena.pulse()
 		if next_beat_index % 4 == 0:
 			camera.trigger_beat(telegraph_time+0.5)
+			shock.fire(arena.radius, arena.radius + 300, Color(0.865, 0.58, 0.0, 1.0))
+		elif next_beat_index % 4 == 2:
 			spawn_radial(randf() * TAU, Color(0.996, 0.715, 0.0, 1.0), radial_speed*0.7)
 	
 	while next_event_index < main.events.size():

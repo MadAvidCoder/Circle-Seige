@@ -215,8 +215,6 @@ shape = SubResource("RectangleShape2D_efxa6")
 
 [node name="Telegraphs" type="Node2D" parent="." unique_id=1995094716]
 
-[node name="UIOverlay" type="CanvasLayer" parent="." unique_id=629823334]
-
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1222265113]
 script = ExtResource("6_7mycd")
 
@@ -229,16 +227,21 @@ access = 2
 filters = PackedStringArray("*.wav;Waveform Audio Files;audio/wav")
 use_native_dialog = true
 
-[node name="PopupPanel" type="PopupPanel" parent="." unique_id=1898693248]
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=629823334]
+
+[node name="PopupPanel" type="PopupPanel" parent="CanvasLayer" unique_id=1898693248]
+transparent_bg = false
 oversampling_override = 1.0
 title = "Processing..."
 initial_position = 2
-always_on_top = true
+size = Vector2i(200, 100)
+transparent = false
+min_size = Vector2i(100, 50)
 
-[node name="Label" type="Label" parent="PopupPanel" unique_id=1150648896]
+[node name="Label" type="Label" parent="CanvasLayer/PopupPanel" unique_id=1150648896]
 offset_left = 4.0
 offset_top = 4.0
-offset_right = 96.0
+offset_right = 196.0
 offset_bottom = 96.0
 text = "Processing "
 

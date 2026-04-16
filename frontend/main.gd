@@ -9,8 +9,8 @@ var beats = []
 var energy = 0.0
 
 @onready var file_sel = $FileDialog
-@onready var popup = $PopupPanel
-@onready var popup_label = $PopupPanel/Label
+@onready var popup = $CanvasLayer/PopupPanel
+@onready var popup_label = $CanvasLayer/PopupPanel/Label
 @onready var menu = $Menu
 @onready var arena = $Arena
 
@@ -20,7 +20,9 @@ func start(path: String) -> void:
 	var analysis_path = ProjectSettings.globalize_path("user://analysis.jsonl")
 	
 	popup_label.text = "Processing `" + wav_path.get_file() + "`. \nPlease Wait..."
-	popup.popup()
+	popup.popup_centered()
+	
+	await get_tree().create_timer(0.1).timeout
 
 	OS.execute(analyser_path, [
 		"analyze-wav",

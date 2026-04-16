@@ -1,0 +1,9 @@
+[gd_resource type="FontVariation" format=3 uid="uid://c8e4vkk8i2i6t"]
+
+[ext_resource type="FontFile" uid="uid://ssqyolopkown" path="res://Syne.ttf" id="1_bc56r"]
+
+[resource]
+base_font = ExtResource("1_bc56r")
+variation_opentype = {
+2003265652: 500
+}

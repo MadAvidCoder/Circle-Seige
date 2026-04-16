@@ -1,0 +1,6 @@
+[gd_resource type="FontVariation" format=3 uid="uid://bf13ivlhnlvix"]
+
+[ext_resource type="FontFile" uid="uid://t86jkhw8n4oi" path="res://Audiowide.ttf" id="1_oqb4p"]
+
+[resource]
+base_font = ExtResource("1_oqb4p")

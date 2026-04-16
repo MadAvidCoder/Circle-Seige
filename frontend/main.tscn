@@ -10,7 +10,11 @@
 [ext_resource type="Script" uid="uid://d3fp47cajp10d" path="res://director.gd" id="3_h2yge"]
 [ext_resource type="Script" uid="uid://b3kl7cctlbvi7" path="res://beat_particles.gd" id="4_5vw27"]
 [ext_resource type="Script" uid="uid://bnei6yg2f0p60" path="res://gradient_bg.gd" id="4_efxa6"]
+[ext_resource type="Script" uid="uid://ce8q5rm7k85d2" path="res://menu.gd" id="5_ycdy4"]
 [ext_resource type="Script" uid="uid://bsochxaqjp1xu" path="res://camera_2d.gd" id="6_7mycd"]
+[ext_resource type="FontVariation" uid="uid://ctv68hef3sn04" path="res://syne.tres" id="6_vivmo"]
+[ext_resource type="FontVariation" uid="uid://c8e4vkk8i2i6t" path="res://syne_bold.tres" id="7_vivmo"]
+[ext_resource type="FontVariation" uid="uid://bf13ivlhnlvix" path="res://audiowide.tres" id="8_2cqfq"]
 [ext_resource type="Script" uid="uid://ddyw6hltilyq3" path="res://near_miss_fx.gd" id="11_dg77c"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_efxa6"]
@@ -98,6 +102,59 @@ offset_bottom = 594.0
 mouse_filter = 2
 script = ExtResource("4_efxa6")
 
+[node name="Menu" type="Node2D" parent="." unique_id=393189026]
+script = ExtResource("5_ycdy4")
+option_font = ExtResource("6_vivmo")
+option_selected_font = ExtResource("7_vivmo")
+
+[node name="Control" type="Control" parent="Menu" unique_id=897296254]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Seige" type="Label" parent="Menu/Control" unique_id=2045065227]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 18.0
+offset_top = -516.0
+offset_right = 229.0
+offset_bottom = -428.0
+grow_horizontal = 2
+theme_override_fonts/font = ExtResource("8_2cqfq")
+theme_override_font_sizes/font_size = 68
+text = "Seige"
+
+[node name="Slashes" type="Label" parent="Menu/Control" unique_id=768443116]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -59.0
+offset_top = -529.0
+offset_right = 20.0
+offset_bottom = -441.0
+grow_horizontal = 2
+theme_override_fonts/font = ExtResource("8_2cqfq")
+theme_override_font_sizes/font_size = 68
+text = "//"
+
+[node name="Circle" type="Label" parent="Menu/Control" unique_id=1911215949]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -268.5
+offset_top = -541.0
+offset_right = -47.0
+offset_bottom = -453.0
+grow_horizontal = 2
+theme_override_fonts/font = ExtResource("8_2cqfq")
+theme_override_font_sizes/font_size = 68
+text = "Circle"
+
 [node name="Spectrum" type="Node2D" parent="." unique_id=72163630]
 position = Vector2(-960, 450)
 script = ExtResource("2_lquwl")
@@ -120,6 +177,7 @@ process_material = SubResource("ParticleProcessMaterial_kek77")
 script = ExtResource("4_5vw27")
 
 [node name="Arena" type="Node2D" parent="." unique_id=1662148492]
+visible = false
 script = ExtResource("1_ig7tw")
 thickness = 10.0
 

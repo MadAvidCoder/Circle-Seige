@@ -13,7 +13,8 @@ var energy = 0.0
 @onready var popup_label = $PopupPanel/Label
 
 func _ready() -> void:
-	file_sel.show()
+	#file_sel.show()
+	pass
 
 func _file_selected(path: String) -> void:
 	var wav_path = path

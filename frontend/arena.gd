@@ -17,13 +17,13 @@ func _draw() -> void:
 	draw_circle(Vector2.ZERO, radius, Color(0,0,0,0.2))
 	draw_arc(Vector2.ZERO, radius, 0.0, TAU, 128, Color(0.9, 0.9, 1.0, 0.9), thickness, true)
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	queue_redraw()
 	if !Config.reduced_motion:
 		var target_radius = nominal_radius * (1 + 0.3 * main.energy)
-		radius = lerp(radius, target_radius, smooth_factor) * bump * extra
+		radius = lerp(radius, target_radius, smooth_factor) * bump #* extra
 	else:
-		radius = nominal_radius * 1.21 * extra
+		radius = nominal_radius * 1.21 #* extra
 
 func pulse():
 	modulate = Config.colours["shockwave"].lightened(0.42)

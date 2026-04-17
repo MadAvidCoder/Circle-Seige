@@ -23,8 +23,8 @@ var energy = 0.0
 
 var diffs = {
 	"chill": {
-		"threshold": 7.0,
-		"refractory": [14, 10, 6],
+		"threshold": 6.5,
+		"refractory": [12, 8, 6],
 	},
 	"normal": {
 		"threshold": 5.0,

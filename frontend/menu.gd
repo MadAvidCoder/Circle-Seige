@@ -106,6 +106,7 @@ var angle_offset = -PI / 2.0 - (sector_size / 2.0)
 @onready var main = $".."
 @onready var camera = $"../Camera2D"
 @onready var arena = $"../Arena"
+@onready var director = $"../Director"
 
 var audio_path = ""
 
@@ -144,31 +145,31 @@ func _unhandled_input(event: InputEvent) -> void:
 					file_sel.show()
 				"Chill":
 					main.start(audio_path, "chill")
-					main.telegraph_time = 0.47
-					main.radial_speed = 442.0
-					main.chord_speed = 646.0
-					main.travel_time = arena.radius / main.radial_speed
+					director.telegraph_time = 0.47
+					director.radial_speed = 442.0
+					director.chord_speed = 646.0
+					director.travel_time = arena.radius / director.radial_speed
 					arena.extra = 1.1
 				"Normal":
 					main.start(audio_path, "normal")
-					main.telegraph_time = 0.30
-					main.radial_speed = 520.0
-					main.chord_speed = 760.0
-					main.travel_time = arena.radius / main.radial_speed
+					director.telegraph_time = 0.30
+					director.radial_speed = 520.0
+					director.chord_speed = 760.0
+					director.travel_time = arena.radius / director.radial_speed
 					arena.extra = 1.0
 				"Hard":
 					main.start(audio_path, "hard")
-					main.telegraph_time = 0.20
-					main.radial_speed = 650.0
-					main.chord_speed = 950.0
-					main.travel_time = arena.radius / main.radial_speed
+					director.telegraph_time = 0.20
+					director.radial_speed = 650.0
+					director.chord_speed = 950.0
+					director.travel_time = arena.radius / director.radial_speed
 					arena.extra = 0.9
 				"Insane":
 					main.start(audio_path, "insane")
-					main.telegraph_time = 0.12
-					main.radial_speed = 832.0
-					main.chord_speed = 1216.0
-					main.travel_time = arena.radius / main.radial_speed
+					director.telegraph_time = 0.12
+					director.radial_speed = 832.0
+					director.chord_speed = 1216.0
+					director.travel_time = arena.radius / director.radial_speed
 					arena.extra = 0.78
 				"Particles": Config.particles = !Config.particles
 				"Camera FX": Config.camera_fx = !Config.camera_fx

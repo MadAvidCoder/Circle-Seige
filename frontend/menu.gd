@@ -117,6 +117,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if (event is InputEventMouseButton and event.pressed) or event.is_action_pressed("ui_accept"):
 		if selected_segment == -1:
 			return
+		camera.trigger_select()
 		if render_options[selected_segment].has("children"):
 			if render_options[selected_segment]["label"] == "Demo":
 				audio_path = ProjectSettings.globalize_path("res://demo.wav")
@@ -294,8 +295,6 @@ func _draw() -> void:
 			var status_pos = label_pos + Vector2((dx - status_size.x/2), ascent + dy + 6)
 			draw_string(status_font, status_pos, status_text, HorizontalAlignment.HORIZONTAL_ALIGNMENT_LEFT, -1, status_font_size, status_colour)
 
-	
-	
 	if selected_segment != -1:
 		if selected_segment < render_options.size() and render_options[selected_segment].has("tooltip"):
 			var message = render_options[selected_segment].tooltip

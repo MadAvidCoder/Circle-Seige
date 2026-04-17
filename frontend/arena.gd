@@ -19,11 +19,11 @@ func _draw() -> void:
 func _process(delta: float) -> void:
 	queue_redraw()
 	if !Config.reduced_motion:
-		var target_radius = nominal_radius * (1 + 0.3 * main.energy)	
+		var target_radius = nominal_radius * (1 + 0.3 * main.energy)
 		radius = lerp(radius, target_radius, smooth_factor) * bump
 
 func pulse():
-	modulate = Color(1.0, 0.9, 0.7)
+	modulate = Config.colours["shockwave"].lightened(0.42)
 	timer.start()
 	var tween = get_tree().create_tween()
 	tween.tween_property(self, "bump", 1.02, 0.07).set_trans(Tween.TRANS_SINE)

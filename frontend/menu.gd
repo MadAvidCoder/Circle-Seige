@@ -162,6 +162,9 @@ func _unhandled_input(event: InputEvent) -> void:
 				"Exclusive Fullscreen":
 					Config.window_mode = Config.WindowModes.EXCLUSIVE_FULLSCREEN
 					DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN)
+				"Cyber", "Ink", "Monochrome", "Warmth":
+					Config.cur_palette = render_options[selected_segment]["label"].to_lower()
+					Config.colours = Config.palettes[Config.cur_palette]
 
 func _on_file_selected(path: String) -> void:
 	audio_path = path
@@ -218,6 +221,11 @@ func get_status(option: Dictionary) -> Array:
 				return ["[ SELECTED ]", Color(0.3,0.7,1.0,1)]
 			else:
 				return ["", Color(1.0,1.0,1.0,0)]
+		"Cyber", "Ink", "Monochrome", "Warmth":
+			if Config.cur_palette == option["label"].to_lower():
+				return ["[ SELECTED ]", Color(0.3,0.7,1.0,1)]
+			else:
+				return ["", Color(1.0,1.0,1.0,0)]
 		_:
 			return ["", Color(1, 1, 1, 0)]
 
@@ -248,9 +256,12 @@ func _draw() -> void:
 		for i in range(49):
 			var a = lerpf(start, end, float(i) / 48.0)
 			pts.append(Vector2(cos(a), sin(a)) * radius)
-		
-		draw_colored_polygon(pts, Color(0.2, 1.0, 0.2, 0.4))
-		draw_arc(Vector2.ZERO, radius, start, end, 64, Color.GREEN, 2.0)
+		var sel_c = Config.colours["selection"]
+		sel_c.a = 0.4
+		var arc_c = Config.colours["selection"]
+		arc_c.a = 0.8
+		draw_colored_polygon(pts, sel_c)
+		draw_arc(Vector2.ZERO, radius, start, end, 64, arc_c, 2.0)
 	else:
 		selected_segment = -1
 	

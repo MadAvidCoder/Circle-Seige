@@ -44,10 +44,15 @@ func _draw() -> void:
 			var y = y_offset - clamp((db + 5.0) / 10.0, 0, 1) * spectrum_height
 			pts.append(Vector2(x, y))
 		pts.append(Vector2(width * float(n_bins) / float(n_bins-1) + x_offset, y_offset))
-		draw_polyline(pts, Color(0.502, 0.698, 1.0, 0.312), 21, true)
-		draw_polyline(pts, Color(0.502, 0.698, 1.0, 0.572), 8, true)
-		draw_polyline(pts, Color(0.314, 0.663, 0.941, 1.0), 1, true)
+		var s1 = Config.colours["spectrum"].lightened(0.2)
+		s1.a = 0.54
+		var s2 = Config.colours["spectrum"].lightened(0.3)
+		s2.a = 0.3
+		
+		draw_polyline(pts, s2, 21, true)
+		draw_polyline(pts, s1, 8, true)
+		draw_polyline(pts, Config.colours["spectrum"], 1, true)
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if Config.spectrum_line and !Config.reduced_motion:
 		queue_redraw()

@@ -61,14 +61,14 @@ func _process(_delta: float) -> void:
 				if Config.camera_fx:
 					camera.trigger_beat()
 				if Config.shockwave:
-					shock.fire(arena.radius, arena.radius + 300, Color(0.865, 0.58, 0.0, 1.0))
+					shock.fire(arena.radius, arena.radius + 300, Config.colours["shockwave"])
 				if Config.particles:
 					particles.global_position = arena.global_position
 					particles.process_material.emission_ring_inner_radius = arena.radius + 33
 					particles.process_material.emission_ring_radius = arena.radius + 34
 					particles.restart()
 		elif next_beat_index % 4 == 2:
-			spawn_radial(randf() * TAU, Color(0.996, 0.482, 0.192, 1.0), radial_speed*0.7)
+			spawn_radial(randf() * TAU, Config.colours["beat_obstacle"], radial_speed*0.7)
 	
 	while next_event_index < main.events.size():
 		var event = main.events[next_event_index]
@@ -79,9 +79,9 @@ func _process(_delta: float) -> void:
 				"low":
 					var theta_a = base_theta
 					var theta_b = base_theta + PI * 0.22 + event["s"] * 1.5
-					spawn_chord(theta_a, theta_b)
+					spawn_chord(theta_a, theta_b, Config.colours["obstacles"])
 				"mid", "high":
-					spawn_radial(base_theta)
+					spawn_radial(base_theta, Config.colours["obstacles"])
 			next_event_index += 1
 		else:
 			break
@@ -160,7 +160,7 @@ func spawn_radial(theta: float, colour: Color = Color("d9a0d4"), spd = radial_sp
 	telegraphs.add_child(tg)
 	tg.setup(centre, spawn_pos, inward, projectile_scene, spd, projectiles, telegraph_time, colour)
 
-func spawn_chord(theta_a: float, theta_b: float) -> void:
+func spawn_chord(theta_a: float, theta_b: float, colour: Color = Color("d9a0d4")) -> void:
 	if is_angle_in_gap(theta_a):
 		theta_a = nearest_angle_outside_gap(theta_a)
 	if is_angle_in_gap(theta_b):
@@ -173,4 +173,4 @@ func spawn_chord(theta_a: float, theta_b: float) -> void:
 	
 	var tg = chord_telegraph_scene.instantiate()
 	telegraphs.add_child(tg)
-	tg.setup(a, b, projectile_scene, chord_speed, projectiles, telegraph_time)
+	tg.setup(a, b, projectile_scene, chord_speed, projectiles, telegraph_time, colour)

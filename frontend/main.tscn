@@ -28,7 +28,7 @@ shader_parameter/p2 = Vector2(0.35, 0.78)
 shader_parameter/p3 = Vector2(0.78, 0.75)
 shader_parameter/dark_col = Color(0.04, 0.03, 0.06, 1)
 shader_parameter/light_col = Color(0.83, 0.78, 1, 1)
-shader_parameter/mix_strength = 0.35
+shader_parameter/mix_strength = 0.47
 shader_parameter/mid = 0.5
 shader_parameter/range = 0.55
 shader_parameter/softness = 1.5
@@ -42,7 +42,8 @@ shader_parameter/vignette = 0.44
 shader_parameter/brightness = 1.0
 
 [sub_resource type="Gradient" id="Gradient_5vw27"]
-colors = PackedColorArray(0.865, 0.58, 0, 1, 0.865, 0.58, 0, 1)
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(0.865, 0.58, 0, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_kek77"]
 gradient = SubResource("Gradient_5vw27")

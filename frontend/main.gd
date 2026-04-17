@@ -14,6 +14,17 @@ var energy = 0.0
 @onready var menu = $Menu
 @onready var arena = $Arena
 
+@onready var bg = $BGCanvas/Background/Gradient
+@onready var particles = $BeatParticles
+
+func update_colours():
+	bg.material.set_shader_parameter("dark_col", Config.colours["bg_dark"])
+	bg.material.set_shader_parameter("light_col", Config.colours["bg_light"])
+	particles.texture.gradient.set_color(0, Config.colours["shockwave"])
+
+func _ready() -> void:
+	update_colours()
+
 func start(path: String) -> void:
 	var wav_path = path
 	var analyser_path = "C:/Users/Ma Family/Documents/David/Godot/Circle-Seige/backend/target/release/circle_siege_backend.exe"

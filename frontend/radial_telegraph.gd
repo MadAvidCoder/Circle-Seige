@@ -1,7 +1,6 @@
 extends Node2D
 
 @export var telegraph_time = 0.4
-@export var colour = Color(1, 0.5, 0.2, 0.75)
 
 var t_left: float
 var arena_centre: Vector2
@@ -35,7 +34,7 @@ func _process(delta: float) -> void:
 
 func _draw() -> void:
 	var alpha = clampf(t_left / maxf(telegraph_time, 0.0001), 0.0, 1.0)
-	var c = colour
-	c.a *= (1.0 - alpha * 0.3)
+	var c = Config.colours["telegraph_radial"]
+	c.a = 0.7 * (1.0 - alpha * 0.3)
 	draw_line(spawn_pos, spawn_pos + dir * 36.0, c, 3.0, true)
 	draw_circle(spawn_pos, 5.0, c)

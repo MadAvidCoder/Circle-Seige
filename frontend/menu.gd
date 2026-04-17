@@ -8,7 +8,7 @@ extends Node2D
 @export var option_color = Color(0.85, 0.9, 1.0, 0.72)
 @export var option_selected_color = Color(0.3, 1.0, 0.8, 1.0)
 @export var label_padding: float = 45.0 
-@export var font_size: int = 38
+@export var font_size: int = 40
 
 var segments = 4
 
@@ -106,6 +106,7 @@ var angle_offset = -PI / 2.0 - (sector_size / 2.0)
 @onready var player = $"../Player"
 @onready var file_sel = $"../FileDialog"
 @onready var main = $".."
+@onready var camera = $"../Camera2D"
 
 var audio_path = ""
 
@@ -174,6 +175,51 @@ func _on_file_selected(path: String) -> void:
 func _process(_delta: float) -> void:
 	queue_redraw()
 
+func get_status(option: Dictionary) -> Array:
+	match option.label:
+		"Particles": 
+			if Config.particles:
+				return ["[ ON ]", Color(0.3,1,0.3,1)]
+			else:
+				return ["[ OFF ]", Color(1.0,0.3,0.3,1)]
+		"Camera FX":
+			if Config.camera_fx:
+				return ["[ ON ]", Color(0.3,1,0.3,1)]
+			else:
+				return ["[ OFF ]", Color(1.0,0.3,0.3,1)]
+		"Shockwave":
+			if Config.shockwave:
+				return ["[ ON ]", Color(0.3,1,0.3,1)]
+			else:
+				return ["[ OFF ]", Color(1.0,0.3,0.3,1)]
+		"Spectrum Line":
+			if Config.spectrum_line:
+				return ["[ ON ]", Color(0.3,1,0.3,1)]
+			else:
+				return ["[ OFF ]", Color(1.0,0.3,0.3,1)]
+		"Reduced Motion":
+			if Config.reduced_motion:
+				return ["[ ON ]", Color(0.3,1,0.3,1)]
+			else:
+				return ["[ OFF ]", Color(1.0,0.3,0.3,1)]
+		"Fullscreen":
+			if Config.window_mode == Config.WindowModes.FULLSCREEN:
+				return ["[ SELECTED ]", Color(0.3,0.7,1.0,1)]
+			else:
+				return ["", Color(1.0,1.0,1.0,0)]
+		"Windowed":
+			if Config.window_mode == Config.WindowModes.WINDOWED:
+				return ["[ SELECTED ]", Color(0.3,0.7,1.0,1)]
+			else:
+				return ["", Color(1.0,1.0,1.0,0)]
+		"Exclusive Fullscreen": 
+			if Config.window_mode == Config.WindowModes.EXCLUSIVE_FULLSCREEN:
+				return ["[ SELECTED ]", Color(0.3,0.7,1.0,1)]
+			else:
+				return ["", Color(1.0,1.0,1.0,0)]
+		_:
+			return ["", Color(1, 1, 1, 0)]
+
 func _draw() -> void:
 	draw_circle(Vector2.ZERO, radius, Color(0,0,0,0.2))
 	draw_arc(Vector2.ZERO, radius, 0.0, TAU, 128, Color(0.9, 0.9, 1.0, 0.9), thickness, true)
@@ -215,11 +261,12 @@ func _draw() -> void:
 		var col = option_selected_color if is_selected else option_color
 		var font = option_selected_font if is_selected && option_selected_font != null else option_font
 
-		var text = render_options[i].label
-		var text_size = font.get_string_size(text, HorizontalAlignment.HORIZONTAL_ALIGNMENT_CENTER, -1, font_size)
+		var label_text = render_options[i].label
 
-		var dx = text_size.x / 2
-		var dy = text_size.y / 2
+		var label_text_size = font.get_string_size(label_text, HorizontalAlignment.HORIZONTAL_ALIGNMENT_CENTER, -1, font_size)
+
+		var dx = label_text_size.x / 2
+		var dy = label_text_size.y / 2
 		var corners = [
 			Vector2(-dx, -dy),
 			Vector2(dx, -dy),
@@ -230,14 +277,24 @@ func _draw() -> void:
 		var anchor_offset = 0.0
 		for c in corners:
 			anchor_offset = max(anchor_offset, c.dot(dir))
-		
 		var box_center_dist = radius - label_padding - anchor_offset
 		var box_center = dir * box_center_dist
-
-		var label_pos = box_center - Vector2(text_size.x / 2, text_size.y / 2)
+		var label_pos = box_center - Vector2(label_text_size.x / 2, label_text_size.y / 2)
 		
 		var ascent = font.get_ascent(font_size)
-		draw_string(font, label_pos+Vector2(0, ascent), text, HorizontalAlignment.HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, col)
+		draw_string(font, label_pos+Vector2(0, ascent), label_text, HorizontalAlignment.HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, col)
+		
+		var status = get_status(render_options[i])
+		var status_text = status[0]
+		var status_colour = status[1]
+		if status_text != "":
+			var status_font_size = int(font_size * 0.53)
+			var status_font = option_font
+			var status_size = status_font.get_string_size(status_text, HorizontalAlignment.HORIZONTAL_ALIGNMENT_CENTER, -1, status_font_size)
+			var status_pos = label_pos + Vector2((dx - status_size.x/2), ascent + dy + 6)
+			draw_string(status_font, status_pos, status_text, HorizontalAlignment.HORIZONTAL_ALIGNMENT_LEFT, -1, status_font_size, status_colour)
+
+	
 	
 	if selected_segment != -1:
 		if selected_segment < render_options.size() and render_options[selected_segment].has("tooltip"):

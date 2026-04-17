@@ -73,7 +73,7 @@ scale_max = 20.0
 scale_curve = SubResource("CurveTexture_kek77")
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_h2yge"]
-size = Vector2(45, 45)
+size = Vector2(48, 48)
 
 [sub_resource type="Gradient" id="Gradient_h2yge"]
 offsets = PackedFloat32Array(0)

@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://8sdgp2punabm" path="res://projectile.gd" id="1_t7eop"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_xh6v2"]
-size = Vector2(30, 30)
+size = Vector2(33, 33)
 
 [sub_resource type="Gradient" id="Gradient_ig7tw"]
 offsets = PackedFloat32Array(0)

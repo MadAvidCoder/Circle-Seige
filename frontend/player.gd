@@ -12,8 +12,10 @@ extends CharacterBody2D
 @onready var arena_radius = $"../Arena".radius
 @onready var player_size = $Sprite2D.get_rect().size.x
 @onready var near_miss_fx = $NearMissFX
+@onready var sprite = $Sprite2D
 
 var lives = 3
+var invulnerable = false
 
 func _physics_process(delta: float) -> void:
 	var mouse = get_global_mouse_position()
@@ -47,3 +49,36 @@ func _on_near_miss_area_entered(area: Area2D) -> void:
 	
 	area.near_missed = true
 	near_miss_fx.trigger()
+
+func hit():
+	if invulnerable:
+		return
+	lives -= 1
+	if lives <= 0:
+		die()
+	else:
+		flash_and_invuln()
+
+func die():
+	# TODO: Proper game over
+	print("TBD")
+	get_tree().reload_current_scene()
+
+func flash_and_invuln():
+	invulnerable = true
+	for i in range(4):
+		sprite.texture.gradient.set_color(0, Config.colours["player"].lightened(0.8))
+		await get_tree().create_timer(0.06).timeout
+		sprite.texture.gradient.set_color(0, Config.colours["player"])
+		await get_tree().create_timer(0.06).timeout
+		
+	sprite.texture.gradient.set_color(0, Config.colours["player"].lightened(0.65))
+	await get_tree().create_timer(1.5).timeout
+	sprite.texture.gradient.set_color(0, Config.colours["player"])
+	
+	for i in range(2):
+		sprite.texture.gradient.set_color(0, Config.colours["player"].lightened(0.72))
+		await get_tree().create_timer(0.09).timeout
+		sprite.texture.gradient.set_color(0, Config.colours["player"])
+		await get_tree().create_timer(0.09).timeout
+	invulnerable = false

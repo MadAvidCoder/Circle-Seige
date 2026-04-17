@@ -150,6 +150,7 @@ func _unhandled_input(event: InputEvent) -> void:
 					director.chord_speed = 646.0
 					director.travel_time = arena.radius / director.radial_speed
 					arena.extra = 1.1
+					player.lives = 10
 				"Normal":
 					main.start(audio_path, "normal")
 					director.telegraph_time = 0.30
@@ -157,6 +158,7 @@ func _unhandled_input(event: InputEvent) -> void:
 					director.chord_speed = 760.0
 					director.travel_time = arena.radius / director.radial_speed
 					arena.extra = 1.0
+					player.lives = 4
 				"Hard":
 					main.start(audio_path, "hard")
 					director.telegraph_time = 0.20
@@ -164,6 +166,7 @@ func _unhandled_input(event: InputEvent) -> void:
 					director.chord_speed = 950.0
 					director.travel_time = arena.radius / director.radial_speed
 					arena.extra = 0.9
+					player.lives = 2
 				"Insane":
 					main.start(audio_path, "insane")
 					director.telegraph_time = 0.12
@@ -171,6 +174,7 @@ func _unhandled_input(event: InputEvent) -> void:
 					director.chord_speed = 1216.0
 					director.travel_time = arena.radius / director.radial_speed
 					arena.extra = 0.78
+					player.lives = 1
 				"Particles": Config.particles = !Config.particles
 				"Camera FX": Config.camera_fx = !Config.camera_fx
 				"Shockwave": Config.shockwave = !Config.shockwave

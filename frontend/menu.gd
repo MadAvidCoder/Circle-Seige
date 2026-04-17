@@ -5,8 +5,6 @@ extends Node2D
 
 @export var option_font: Font
 @export var option_selected_font: Font
-@export var option_color = Color(0.85, 0.9, 1.0, 0.72)
-@export var option_selected_color = Color(0.3, 1.0, 0.8, 1.0)
 @export var label_padding: float = 45.0 
 @export var font_size: int = 40
 
@@ -165,6 +163,7 @@ func _unhandled_input(event: InputEvent) -> void:
 				"Cyber", "Ink", "Monochrome", "Warmth":
 					Config.cur_palette = render_options[selected_segment]["label"].to_lower()
 					Config.colours = Config.palettes[Config.cur_palette]
+					main.update_colours()
 
 func _on_file_selected(path: String) -> void:
 	audio_path = path
@@ -270,7 +269,7 @@ func _draw() -> void:
 		var dir = Vector2(cos(a), sin(a))
 
 		var is_selected = (i == selected_segment)
-		var col = option_selected_color if is_selected else option_color
+		var col = Config.colours["tooltip"] if is_selected else Config.colours["menu"]
 		var font = option_selected_font if is_selected && option_selected_font != null else option_font
 
 		var label_text = render_options[i].label
@@ -314,4 +313,6 @@ func _draw() -> void:
 			
 			var ypos = radius + 72
 			var tooltip_width = get_viewport_rect().size.x
-			draw_string(option_font, Vector2(-tooltip_width/2, ypos), message, HorizontalAlignment.HORIZONTAL_ALIGNMENT_CENTER, tooltip_width, 26, Color(0.7, 1.0, 0.9, 0.78))
+			var c = Config.colours["tooltip"]
+			c.a = 0.76
+			draw_string(option_font, Vector2(-tooltip_width/2, ypos), message, HorizontalAlignment.HORIZONTAL_ALIGNMENT_CENTER, tooltip_width, 26, c)

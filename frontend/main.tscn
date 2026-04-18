@@ -128,7 +128,7 @@ offset_right = 40.0
 offset_bottom = 40.0
 mouse_filter = 2
 
-[node name="Seige" type="Label" parent="Menu/Control" unique_id=2045065227]
+[node name="Siege" type="Label" parent="Menu/Control" unique_id=2045065227]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -140,7 +140,7 @@ offset_bottom = -428.0
 grow_horizontal = 2
 theme_override_fonts/font = ExtResource("8_2cqfq")
 theme_override_font_sizes/font_size = 68
-text = "Seige"
+text = "Siege"
 
 [node name="Slashes" type="Label" parent="Menu/Control" unique_id=768443116]
 layout_mode = 1

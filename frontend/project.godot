@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="Circle Seige"
+config/name="Circle Siege"
 run/main_scene="uid://bi3v477dgld7r"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 config/icon="res://icon.svg"
@@ -23,6 +23,7 @@ Config="*uid://cfnnbxwy68o3k"
 
 window/size/viewport_width=1920
 window/size/viewport_height=1080
+window/size/mode=3
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 

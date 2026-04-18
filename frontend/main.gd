@@ -62,13 +62,17 @@ func start(path: String, difficulty: String) -> void:
 	
 	await get_tree().create_timer(0.1).timeout
 
-	OS.execute(analyser_path, [
+	var res = OS.execute(analyser_path, [
 		"analyze-wav",
 		"--input", wav_path,
 		"--output", analysis_path,
 		"--threshold", diffs[difficulty]["threshold"],
 		"--refractory", diffs[difficulty]["refractory"][0], diffs[difficulty]["refractory"][1], diffs[difficulty]["refractory"][2]
 	])
+	
+	if res != 0:
+		print("ERROR")
+		get_tree().reload_current_scene()
 	
 	var records = []
 	var file = FileAccess.open(analysis_path, FileAccess.READ)
@@ -94,14 +98,30 @@ func start(path: String, difficulty: String) -> void:
 	spectrum.sort_custom(func(a, b): return a["t"] < b["t"])
 	beats.sort()
 
-	var wav_file = FileAccess.open(wav_path, FileAccess.READ)
-	$AudioStreamPlayer.stream = AudioStreamWAV.load_from_buffer(wav_file.get_buffer(wav_file.get_length()))
-	wav_file.close()
-	$AudioStreamPlayer.play()
+	match wav_path.get_extension().to_lower():
+		"mp3":
+			var mfile = FileAccess.open(path, FileAccess.READ)
+			var stream = AudioStreamMP3.new()
+			stream.data = mfile.get_buffer(mfile.get_length())
+			$AudioStreamPlayer.stream = stream
+			mfile.close()
+		"wav":
+			var mfile = FileAccess.open(path, FileAccess.READ)
+			var stream = AudioStreamWAV.load_from_buffer(mfile.get_buffer(mfile.get_length()))
+			$AudioStreamPlayer.stream = stream
+			mfile.close()
+		"ogg":
+			var stream = AudioStreamOggVorbis.load_from_file(path)
+			$AudioStreamPlayer.stream = stream
+		_:
+			print("unsupported file type")
+			get_tree().reload_current_scene()
+	
 	lives.init($Player.lives)
 	popup.hide()
 	arena.show()
 	menu.hide()
+	$AudioStreamPlayer.play()
 
 func _process(_delta: float) -> void:
 	energy = get_energy($AudioStreamPlayer.get_playback_position())

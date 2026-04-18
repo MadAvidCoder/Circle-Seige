@@ -40,6 +40,27 @@ var diffs = {
 	},
 }
 
+var ws = WebSocketPeer.new()
+
+func _ready() -> void:
+	ws.connect_to_url("ws://127.0.0.1:9001")
+	update_colours()
+
+func _process(_delta: float) -> void:
+	energy = get_energy($AudioStreamPlayer.get_playback_position())
+	ws.poll()
+	var state = ws.get_ready_state()
+	if state == WebSocketPeer.STATE_OPEN:
+		while ws.get_available_packet_count():
+			var packet = ws.get_packet()
+			if ws.was_string_packet():
+				var packet_text = packet.get_string_from_utf8()
+				print("< Got text data from server: %s" % packet_text)
+	elif state == WebSocketPeer.STATE_CLOSED:
+		var code = ws.get_close_code()
+		print("WebSocket closed with code: %d. Clean: %s" % [code, code != -1])
+		set_process(false)
+
 func update_colours():
 	bg.material.set_shader_parameter("dark_col", Config.colours["bg_dark"])
 	bg.material.set_shader_parameter("light_col", Config.colours["bg_light"])
@@ -48,9 +69,6 @@ func update_colours():
 	title_1.add_theme_color_override("font_color", Config.colours["menu"])
 	title_2.add_theme_color_override("font_color", Config.colours["menu"])
 	title_3.add_theme_color_override("font_color", Config.colours["menu"])
-
-func _ready() -> void:
-	update_colours()
 
 func start(path: String, difficulty: String) -> void:
 	var wav_path = path
@@ -122,9 +140,6 @@ func start(path: String, difficulty: String) -> void:
 	arena.show()
 	menu.hide()
 	$AudioStreamPlayer.play()
-
-func _process(_delta: float) -> void:
-	energy = get_energy($AudioStreamPlayer.get_playback_position())
 
 func get_energy(t: float) -> float:
 	for i in range(energies.size()-1):

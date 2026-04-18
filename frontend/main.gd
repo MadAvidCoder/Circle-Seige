@@ -41,25 +41,34 @@ var diffs = {
 }
 
 var ws = WebSocketPeer.new()
-
+var ws_conn = false
 func _ready() -> void:
-	ws.connect_to_url("ws://127.0.0.1:9001")
+	OS.create_process("C:/Users/Ma Family/Documents/David/Godot/Circle-Seige/backend/target/release/circle_siege_backend.exe", [
+		"analyze-live",
+		"--port", 9001,
+		"--threshold", 1,
+	], true)
 	update_colours()
 
 func _process(_delta: float) -> void:
 	energy = get_energy($AudioStreamPlayer.get_playback_position())
-	ws.poll()
-	var state = ws.get_ready_state()
-	if state == WebSocketPeer.STATE_OPEN:
-		while ws.get_available_packet_count():
-			var packet = ws.get_packet()
-			if ws.was_string_packet():
-				var packet_text = packet.get_string_from_utf8()
-				print("< Got text data from server: %s" % packet_text)
-	elif state == WebSocketPeer.STATE_CLOSED:
-		var code = ws.get_close_code()
-		print("WebSocket closed with code: %d. Clean: %s" % [code, code != -1])
-		set_process(false)
+	if not ws_conn:
+		var e = ws.connect_to_url("ws://127.0.0.1:9001")
+		if e == OK:
+			ws_conn = true
+	else:
+		ws.poll()
+		var state = ws.get_ready_state()
+		if state == WebSocketPeer.STATE_OPEN:
+			while ws.get_available_packet_count():
+				var packet = ws.get_packet()
+				if ws.was_string_packet():
+					var packet_text = packet.get_string_from_utf8()
+					print("< Got text data from server: %s" % packet_text)
+		elif state == WebSocketPeer.STATE_CLOSED:
+			var code = ws.get_close_code()
+			print("WebSocket closed with code: %d. Clean: %s" % [code, code != -1])
+			set_process(false)
 
 func update_colours():
 	bg.material.set_shader_parameter("dark_col", Config.colours["bg_dark"])
